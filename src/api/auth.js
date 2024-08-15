@@ -13,9 +13,7 @@ export class Auth {
       };
       const response = await fetch(url, params);
       const result = await response.json();
-
       if (response.status != 200) throw error;
-
       return result;
     } catch (error) {
       return error;
@@ -24,7 +22,18 @@ export class Auth {
 
   async login(data) {
     try {
-      const url = "";
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.AUTH.LOGIN}`;
+      const params = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+      const response = await fetch(url, params);
+      const result = await response.json();
+      if (response.status !== 200) throw error;
+      return result;
     } catch (error) {
       return error;
     }
