@@ -24,6 +24,7 @@ export class Auth {
 
   async login(data) {
     try {
+      const url = "";
     } catch (error) {
       return error;
     }
