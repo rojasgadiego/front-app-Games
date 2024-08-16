@@ -1,1 +1,1 @@
-export { default } from "./join/login";
+export { default } from "./Home";
