@@ -2,24 +2,22 @@ import { Form } from "semantic-ui-react";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
 import { initialValues, validationSchema } from "./LoginForm.form";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "@/graphql/mutations/auth";
+import loginMutationHandler from "@/hooks/loginMutationHandler";
 
 export function LoginForm() {
   const router = useRouter();
+  const [login] = useMutation(LOGIN_USER);
+  const { loginUser, loading, error } = loginMutationHandler(login);
 
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (formValue) => {
-      console.log(formValue);
-      try {
-        // const response = await authCtrl.login(formValue);
-        // if (response.token) {
-        //   login(response.token);
-        // }
-      } catch (error) {
-        console.error(error);
-      }
+      const data = await loginUser(formValue);
+      console.log(data);
     },
   });
 
@@ -43,7 +41,7 @@ export function LoginForm() {
       />
 
       <Form.Button type="submit" fluid loading={formik.isSubmitting}>
-        Entrar
+        {loading ? "Cargando" : "Entrar"}
       </Form.Button>
     </Form>
   );
