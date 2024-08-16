@@ -15,9 +15,15 @@ export function LoginForm() {
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
+
     onSubmit: async (formValue) => {
       const data = await loginUser(formValue);
-      console.log(data);
+      if (data) {
+        //crear contexto
+        //direccionar al home
+      } else {
+        console.log(error);
+      }
     },
   });
 

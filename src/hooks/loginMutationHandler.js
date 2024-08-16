@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { HttpStatusCode } from "axios";
 
-const useMutationHandler = (mutation) => {
+const loginMutationHandler = (mutation) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,7 +15,8 @@ const useMutationHandler = (mutation) => {
         },
       });
       const result = resp.data.login;
-      return result;
+      if (result.status == HttpStatusCode.Ok) return result;
+      setError(result.error);
     } catch (error) {
       setError(error);
     } finally {
@@ -29,4 +31,4 @@ const useMutationHandler = (mutation) => {
   };
 };
 
-export default useMutationHandler;
+export default loginMutationHandler;
