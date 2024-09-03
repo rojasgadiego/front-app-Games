@@ -1,15 +1,21 @@
 import { Form } from "semantic-ui-react";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
+import { useAuth } from "@/hooks/Auth";
 import { initialValues, validationSchema } from "./LoginForm.form";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "@/graphql/mutations/auth";
-import loginMutationHandler from "@/hooks/loginMutationHandler";
+import useAuthMutationHandler from "@/hooks/Auth/useAuthMutationHandler";
+
+import { Auth } from "@/api";
+
+const authCtrl = new Auth();
 
 export function LoginForm() {
   const router = useRouter();
-  const [login] = useMutation(LOGIN_USER);
-  const { loginUser, loading, error } = loginMutationHandler(login);
+  const [loginMutation] = useMutation(LOGIN_USER);
+  const { login, loading } = useAuthMutationHandler(loginMutation);
+  const { loginCtx } = useAuth();
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -17,12 +23,12 @@ export function LoginForm() {
     validateOnChange: false,
 
     onSubmit: async (formValue) => {
-      const data = await loginUser(formValue);
-      if (data) {
-        //crear contexto
-        //direccionar al home
+      const data = await login(formValue);
+      if (data.status == 200) {
+        loginCtx(data.token);
+        //router.push("/");
       } else {
-        console.log(error);
+        console.log(data.error);
       }
     },
   });

@@ -1,13 +1,5 @@
 import { ENV } from "@/utils";
-import { gql, useMutation } from "@apollo/client";
-
-const LOGIN_USER = gql`
-  mutation login($input: LoginUserInput!) {
-    login(loginUserInput: $input) {
-      token
-    }
-  }
-`;
+import { LOGIN_USER } from "@/graphql/mutations/auth";
 
 export class Auth {
   // async register(data) {
@@ -28,7 +20,6 @@ export class Auth {
   //     return error;
   //   }
   // }
-
   // async login(data) {
   //   try {
   //     const url = `${ENV.API_URL}/${ENV.ENDPOINTS.AUTH.LOGIN}`;
@@ -47,21 +38,35 @@ export class Auth {
   //     return error;
   //   }
   // }
+  // async login(data) {
+  //   // const LoginUserInput = {
+  //   //   email: data.email,
+  //   //   password: data.password,
+  //   // };
+  //   login({
+  //     variables: {
+  //       input: data,
+  //     },
+  //   })
+  //     .then((response) => {
+  //       const data = response.data;
+  //       console.log(data);
+  //     })
+  //     .catch((error) => {});
+  // }
 
-  async login(data) {
-    // const LoginUserInput = {
-    //   email: data.email,
-    //   password: data.password,
-    // };
-    login({
-      variables: {
-        input: data,
-      },
-    })
-      .then((response) => {
-        const data = response.data;
-        console.log(data);
-      })
-      .catch((error) => {});
+  async loginPrueba(LoginRequestDto) {
+    try {
+      const resp = await LOGIN_USER({
+        variables: {
+          input: LoginRequestDto,
+        },
+      });
+      console.log(resp);
+      // const result = resp.data.login;
+      // return result;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

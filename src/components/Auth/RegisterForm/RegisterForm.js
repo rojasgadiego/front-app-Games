@@ -2,25 +2,30 @@ import { Form } from "semantic-ui-react";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
 import { initialValues, validationSchema } from "./RegisterForm.form";
+import { REGISTER_USER } from "@/graphql/mutations/auth";
+import { useMutation } from "@apollo/client";
+import useAuthMutationHandler from "@/hooks/Auth/useAuthMutationHandler";
 
 export function RegisterForm() {
   const router = useRouter();
+  const [registerMutation] = useMutation(REGISTER_USER);
+  const { register, loading } = useAuthMutationHandler(registerMutation);
 
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (formValue) => {
-      try {
-        const response = await authCtrl.register(formValue);
-        if (response.status == 201) {
-          router.push("/");
-        }
-      } catch (error) {
-        console.error(error);
+      const data = await register(formValue);
+      if (data) {
+        //usuario creado
+        //redireccionar al login
+      } else {
+        console.log(error);
       }
     },
   });
+
   return (
     <Form onSubmit={formik.handleSubmit}>
       <Form.Group widths="equal">
@@ -54,7 +59,7 @@ export function RegisterForm() {
       </Form.Group>
 
       <Form.Button type="submit" fluid loading={formik.isSubmitting}>
-        Registrarse
+        {loading ? "Cargando" : "Registrarse"}
       </Form.Button>
     </Form>
   );
